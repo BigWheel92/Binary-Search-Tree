@@ -1,7 +1,7 @@
 # Binary-Search-Trees
 Binary Search Trees 
 
-The following operations are supported (the operations use recursion):
+The following operations are supported (the operations make use of private recursive member function):
 
 	BinarySearchTree()  : Default Constructor
 
