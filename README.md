@@ -1,5 +1,5 @@
-# Binary-Search-Trees
-Binary Search Trees 
+# Binary-Search-Tree
+
 
 The following operations are supported (the operations make use of private recursive member functions):
 
