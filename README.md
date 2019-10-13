@@ -9,7 +9,7 @@ The following operations are supported (the operations use recursion):
 
 	void insert(k const  key, v const value)   :   insert a value with the specific key.
 
-	v* search(k const key)     :  Find the value which has the given key.
+	v* search(k const key)     :  Find the value of the node which has the given key.
 
 	void inorderPrintKeys() : print keys in inorder fashion.
   
@@ -17,6 +17,6 @@ The following operations are supported (the operations use recursion):
   
 	void deleteKey(k key) : delete the node containing the given key.
 
-	int length() :  returns total number of nodes of Binary Search tree
+	int length() :  returns total number of nodes of Binary Search tree (total number of nodes is equal to the total number of keys.)
   
 	~BinarySearchTree()  : Destructor
