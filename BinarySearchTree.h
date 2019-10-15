@@ -127,7 +127,7 @@ private:
 	}
 
 	//pred is the parent of current.
-	void deleteKey(TNode<k, v>*pred, TNode<k, v>* current, k const key)
+	void deleteKey( TNode<k, v>*& current, k const key)
 	{
 		//the key to delete does not exist in the tree.
 		if (current == nullptr)
@@ -135,75 +135,54 @@ private:
 
 		else if (key > current->key)
 		{	//move to the right subtree
-			deleteKey(current, current->rightChild, key);
+			deleteKey(current->rightChild, key);
 			return;
 		}
 
 		else if (key < current->key)
 		{	//move to the left subtree
-			deleteKey(current, current->leftChild, key);
+			deleteKey(current->leftChild, key);
 			return;
 		}
 		else //current node has the key that we need to delete
 		{
 
-			//case 0:the node to delete is the root node
-			if (this->root == current)
-			{
-				deleteRoot();
-				return;
-			}
 			//case 1: the node to delete is the leaf node.
 			if (current->isLeafNode() == true)
 			{
-				if (pred->leftChild == current)
-					pred->leftChild = nullptr;
-				else pred->rightChild = nullptr;
-
+			
 				delete current;
-
+				current = nullptr;
 				return;
 			}//end of case 1
 
 			//case 2: one of the subtrees of current is nullptr;
 			else if (current->leftChild == nullptr || current->rightChild == nullptr)
 			{
-				if (current->leftChild != nullptr)
+				if (current->leftChild == nullptr)
 				{
-					if (pred->leftChild == current)
-					{
-						pred->leftChild = current->leftChild;
-					}
-					else
-					{
-						pred->rightChild = current->leftChild;
-					}
+					TNode<k, v> *nodeToDelete = current;
+					current = current->rightChild;
+					delete nodeToDelete;
+					return;
 				}
 
-				else if (current->rightChild != nullptr)
+				else //right child is nullptr, but left child is not
 				{
-					if (pred->leftChild == current)
-					{
-						pred->leftChild = current->rightChild;
-					}
-					else
-					{
-						pred->rightChild = current->rightChild;
-					}
+					TNode<k, v> *nodeToDelete = current;
+					current = current->leftChild;
+					delete nodeToDelete;
+					return;
 				}
 
-				delete current;
-				return;
 			}//end of case 2
 
 			else  //case 3: none of the subtrees of node to delete is nullptr.
 			{
 				TNode<k, v> *newNodeToDelete = current->rightChild;
-				TNode<k, v> *pred = current;
-
+				
 				while (newNodeToDelete->leftChild != nullptr)
 				{
-					pred = newNodeToDelete;
 					newNodeToDelete = newNodeToDelete->leftChild;
 				}
 
@@ -211,57 +190,13 @@ private:
 				current->value = newNodeToDelete->value;
 
 				//in this new recursive call, case 0 and 3 will never exist. Only case 1 or case 2 will exist.
-				deleteKey(pred, newNodeToDelete, newNodeToDelete->key);
+				deleteKey(current->rightChild, current->key);
 			}
 		}
 	}
 
-	void deleteRoot()
-	{
-		if (root->isLeafNode())
-		{
-			delete root;
-			root = nullptr;
-			return;
-		}
-
-		else if (root->rightChild == nullptr)
-		{
-			TNode<k, v> *newNodeToDelete = root->leftChild;
-			TNode<k, v> *pred = root;
-
-			//getting the node with maximum value from the left subtree of root.
-			while (newNodeToDelete->rightChild != nullptr)
-			{
-				pred = newNodeToDelete;
-				newNodeToDelete = newNodeToDelete->rightChild;
-			}
-
-			//replacing the data of the root with the data of the max node, and then deleting the max node.
-			root->key = newNodeToDelete->key;
-			root->value = newNodeToDelete->value;
-			deleteKey(pred, newNodeToDelete, newNodeToDelete->key);
-			return;
-		}
-		else
-		{
-			TNode<k, v> *newNodeToDelete = root->rightChild;
-			TNode<k, v> *pred = root;
-
-			//getting the node with minimum value from the right subtree of root.
-			while (newNodeToDelete->leftChild != nullptr)
-			{
-				pred = newNodeToDelete;
-				newNodeToDelete = newNodeToDelete->leftChild;
-			}
-			//replacing the root's data with the data of the min node, and deleting the min node.
-			root->key = newNodeToDelete->key;
-			root->value = newNodeToDelete->value;
-			deleteKey(pred, newNodeToDelete, newNodeToDelete->key);
-			return;
-		}
-
-	}
+	
+	
 public:
 	BinarySearchTree()
 	{
@@ -307,7 +242,7 @@ public:
 
 	void deleteKey(k key)
 	{
-		deleteKey(nullptr, this->root, key);
+		deleteKey(this->root, key);
 	}
 
 	int length() const
@@ -323,3 +258,4 @@ public:
 
 
 };
+
