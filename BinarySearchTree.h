@@ -31,6 +31,70 @@ private:
 	TNode<k, v> *root;
 
 
+	void deleteRoot()
+	{
+		if (this->root == nullptr)
+			return;
+
+		else if (this->root->isLeafNode())
+		{
+			delete this->root;
+			this->root = nullptr;
+			return;
+		}
+
+		else if (this->root->leftChild == nullptr || this->root->rightChild == nullptr)
+		{
+			TNode<k, v> *deleteNode = this->root;
+
+			if (this->root->leftChild == nullptr)
+				this->root = this->root->rightChild;
+
+			else
+				this->root = this->root->leftChild;
+
+			delete deleteNode;
+			return;
+		}
+
+		else
+		{
+			TNode<k, v> *deleteNode = this->root->rightChild;
+			TNode<k, v> *pred = this->root;
+			while (deleteNode->leftChild != nullptr)
+			{
+				pred = deleteNode;
+				deleteNode = deleteNode->leftChild;
+			}
+
+			this->root->key = deleteNode->key;
+			this->root->value = deleteNode->value;
+
+			if (deleteNode->isLeafNode())
+			{
+				if (pred->leftChild==deleteNode)
+				pred->leftChild = nullptr;
+				else pred->rightChild = nullptr;
+
+				delete deleteNode;
+			
+			}
+			else
+			{
+				//the left child of deleteNode is bound to be nullptr
+				if (pred->leftChild == deleteNode)
+				pred->leftChild = deleteNode->rightChild;
+				else pred->rightChild = deleteNode->rightChild;
+
+				delete deleteNode;
+			}
+
+			return;
+		}
+
+
+	}
+
 	int length(TNode<k, v>* node) const
 	{
 		if (node == nullptr)
@@ -191,7 +255,7 @@ private:
 
 				//in this new recursive call, case 0 and 3 will never exist. Only case 1 or case 2 will exist.
 				deleteKey(current->rightChild, current->key);
-			}
+			}//end of case 3.
 		}
 	}
 
@@ -220,6 +284,164 @@ public:
 	{
 		//node is passed by reference.
 		insert(this->root, key, value);
+
+	}
+
+	void deleteKeyIterative(k const key)
+	{
+		TNode<k, v> *pred = nullptr;
+		TNode<k, v> *current = this->root;
+
+		while (current!=nullptr && current->key!= key)
+		{
+			pred = current;
+			if (key > current->key)
+				current = current->rightChild;
+
+			else current = current->leftChild; //key is less than the current node's key.
+		}
+
+		if (current == nullptr)
+		{
+			return; //key does not exist
+		}
+
+		//case 0: the node we need to delete is the root node.
+		if (current == root)
+		{
+			deleteRoot(); //iterative deleteRoot
+		}
+
+		//case 1: the node to delete is the leaf node.
+		else if (current->isLeafNode())
+		{
+			if (pred->leftChild == current)
+			{
+				pred->leftChild = nullptr;
+			}
+			else pred->rightChild = nullptr;
+
+			delete current;
+			return;
+		}//end of case 1.
+
+		//case 2: one of the children of node to delete is nullptr
+		else if (current->leftChild == nullptr || current->rightChild == nullptr)
+		{
+			
+			if (current->leftChild == nullptr)
+			{
+				if (pred->leftChild == current)
+					pred->leftChild = current->rightChild;
+				else pred->rightChild = current->rightChild;
+			}
+
+			else //left child is not nullptr but right child is nullptr.
+			{
+				if (pred->leftChild == current)
+					pred->leftChild = current->leftChild;
+				else pred->rightChild = current->leftChild;
+			}
+
+			delete current;
+			return;
+
+		}//end of case 2.
+
+		else//case 3: none of the children of the node to delete is nullptr.
+		{
+			TNode<k, v> *newNodeToDelete = current->rightChild;
+			TNode<k, v> *newPred = current;
+			while (newNodeToDelete->leftChild != nullptr)
+			{
+				newPred = newNodeToDelete;
+				newNodeToDelete = newNodeToDelete->leftChild;
+			}
+
+			current->key = newNodeToDelete->key;
+			current->value = newNodeToDelete->value;
+			
+			//if newNodeToDelete is a leaf node
+			if (newNodeToDelete->isLeafNode())
+			{
+				if (newPred->leftChild == newNodeToDelete)
+				{
+					newPred->leftChild = nullptr;
+				}
+				else newPred->rightChild = nullptr;
+
+				delete newNodeToDelete;
+				return;
+			}
+
+			else //else left child of newNodeToDelete is bound to be nullptr.
+			{
+				if (newPred->leftChild == newNodeToDelete)
+				{
+					newPred->leftChild = newNodeToDelete->rightChild;
+				}
+				else newPred->rightChild = newNodeToDelete->rightChild;
+
+				delete newNodeToDelete;
+				return;
+			}
+
+		}//end of case 3.
+
+		
+		
+	}
+
+	void insertIterative(k const key, v const value)
+	{
+		TNode<k, v> *pred = nullptr;
+		TNode<k, v> *current = this->root;
+
+		while(current != nullptr)
+		{
+			pred = current;
+			if (key > current->key)
+			{
+				current = current->rightChild;
+			}
+			else if (key < current->key)
+			{
+				current = current->leftChild;
+			}
+		
+			else if (key == current->key)
+			{
+				current->value = value; //overwrite the old value
+				return;
+			}
+		}
+
+		//root is nullptr
+		if (pred == nullptr)
+		{
+			root = new TNode<k, v>;
+			root->key = key;
+			root->value = value;
+			return;
+		}
+
+		else
+		{
+			if (key > pred->key)
+			{
+				pred->rightChild = new TNode<k, v>;
+				pred->rightChild->key = key;
+				pred->rightChild->value = value;
+			}
+			else
+			{
+				pred->leftChild = new TNode<k, v>;
+				pred->leftChild->key = key;
+				pred->leftChild->value = value;
+			}
+			return;
+		}
+
 
 	}
 
@@ -255,7 +477,4 @@ public:
 		deleteAll();
 	}
 
-
-
 };
-
