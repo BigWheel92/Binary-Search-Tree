@@ -17,7 +17,7 @@ struct TNode
 		leftChild = rightChild = nullptr;
 	}
 
-	bool isLeafNode()
+	bool isLeafNode() const
 	{
 		return !(leftChild || rightChild);
 	}
@@ -158,14 +158,10 @@ private:
 
 		cout << node->key << ",";
 
-
-
 		inorderPrintKeys(node->rightChild);
-
-
 	}
 
-	v* search(TNode<k, v>*n, k key)
+	v* search(TNode<k, v>  *n, k const key) const
 	{
 		if (n == nullptr)
 			return nullptr;
@@ -445,7 +441,7 @@ public:
 
 	}
 
-	v* search(k const key)
+	v* search(k const key) const
 	{
 		return search(this->root, key);
 	}
@@ -462,7 +458,7 @@ public:
 		this->root = nullptr;
 	}
 
-	void deleteKey(k key)
+	void deleteKey(k const key)
 	{
 		deleteKey(this->root, key);
 	}
