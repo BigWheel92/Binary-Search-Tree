@@ -9,7 +9,7 @@ The following functions are iterative:
 	
 	void deleteKeyIterative(k const key)  :   delete the node containing the specific key.
 	
-The following functions use recursive (they make use of private recursive member functions):	
+The following functions use recursion(they make use of other private recursive member functions):	
 	
 	BinarySearchTree(BinarySearchTree<k, v> const& that)  :  Overloaded constructor that deep copies another Binary Search Tree Object.
 
