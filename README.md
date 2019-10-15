@@ -5,7 +5,7 @@ The following public functions are supported:
 	
 The following functions are iterative:
 	
-	void insertIterative(k const key, v const value) :  insert a value with the specific key by creating a new node. if the key already 								exists, it simply overwrites the value
+	void insertIterative(k const key, v const value) :  insert a value with the specific key by creating a new node. if the key already exists, it simply overwrites the value
 	
 	void deleteKeyIterative(k const key)  :   delete the node containing the specific key.
 	
@@ -13,7 +13,7 @@ The following functions use recursive (they make use of private recursive member
 	
 	BinarySearchTree(BinarySearchTree<k, v> const& that)  :  Overloaded constructor that deep copies another Binary Search Tree Object.
 
-	void insert(k const  key, v const value)   :  	insert a value with the specific key by creating a new node. if the key already 							exists, it simply overwrites the value
+	void insert(k const  key, v const value)   :  	insert a value with the specific key by creating a new node. if the key already exists, it simply overwrites the value
 
 	v* search(k const key)     :  Find the value of the node which has the given key.
 
